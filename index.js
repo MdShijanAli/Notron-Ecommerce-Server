@@ -37,6 +37,19 @@ app.get('/products', (req, res) => {
   })
 })
 
+app.get('/api/blogs', (req, res) => {
+  const query = 'SELECT * FROM blogs';
+
+  connection.query(query, (err, result) => {
+    if (err) {
+      console.error('Error executing the query:', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+    res.json(result)
+  })
+})
+
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
