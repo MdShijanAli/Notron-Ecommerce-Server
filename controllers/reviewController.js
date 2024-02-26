@@ -1,4 +1,4 @@
-const ReviewModal =  require('../model/reviewModal')
+const ReviewModal =  require('../models/reviewModal')
 
 class ReviewController{
 
@@ -11,13 +11,13 @@ class ReviewController{
         res.status(500).send('Internal Server Error')
       }
       else{
-        const reviewId = result.insertId; // Assuming product_id is part of reviewData
-        reviewModal.getReviewDetails(reviewId, (err, reviews) => {
+        const reviewId = result.insertId;
+        reviewModal.getReviewDetails(reviewId, (err, result) => {
           if (err) {
             console.error('Error Getting Reviews for the Product', err);
             res.status(500).send('Internal Server Error');
           } else {
-            res.json({ message: 'Review Added successfully', status: 'success', reviews });
+            res.json({ message: 'Review Added successfully', status: 'success', response: result.length > 0 ? result[0] : null });
           }
         });
       }
@@ -32,7 +32,7 @@ class ReviewController{
         console.error('Error Getting Reviews with This ID', err)
         res.status(500).send('Internal Server Error')
       }else{
-        res.json(result)
+        res.json(result.length > 0 ? result[0] : null)
       }
     })
   }

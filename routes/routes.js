@@ -1,8 +1,8 @@
 // routes.js
 const express = require('express');
-const ProductController = require('../controller/productController');
-const BlogController = require('../controller/blogController')
-const ReviewController = require('../controller/reviewController')
+const ProductController = require('../controllers/productController');
+const BlogController = require('../controllers/blogController')
+const ReviewController = require('../controllers/reviewController')
 
 const router = express.Router();
 const productController = new ProductController();

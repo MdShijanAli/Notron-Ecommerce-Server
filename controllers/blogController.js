@@ -1,4 +1,4 @@
-const BlogModal = require('../model/blogModel')
+const BlogModal = require('../models/blogModel')
 
 class BlogController {
   getAllBlogs(req, res){
