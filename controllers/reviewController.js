@@ -24,6 +24,28 @@ class ReviewController{
     })
   }
 
+  editReviewByID(req, res){
+    const reviewId = req.params.reviewId;
+    const reviewData = req.body;
+    const reviewModal = new ReviewModal();
+    reviewModal.editReviewByID(reviewId, reviewData, (err, result)=>{
+      if(err){
+        console.error('Error Editing Review', err)
+        res.status(500).send('Internal Server Error')
+      }   
+      else{
+        reviewModal.getReviewDetails(reviewId, (err, result) => {
+          if (err) {
+            console.error('Error Getting Reviews for the Product', err);
+            res.status(500).send('Internal Server Error');
+          } else {
+            res.json({ message: 'Review Updated successfully', status: 'success', response: result.length > 0 ? result[0] : null });
+          }
+        });
+      }
+    })
+  }
+
   getReviewDetails(req, res){
     const reviewId = req.params.reviewId;
     const reviewModal = new ReviewModal();
