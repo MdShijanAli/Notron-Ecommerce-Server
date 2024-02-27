@@ -1,8 +1,8 @@
 // routes.js
 const express = require('express');
-const ProductController = require('../controller/productController');
-const BlogController = require('../controller/blogController')
-const ReviewController = require('../controller/reviewController')
+const ProductController = require('../controllers/productController');
+const BlogController = require('../controllers/blogController')
+const ReviewController = require('../controllers/reviewController')
 
 const router = express.Router();
 const productController = new ProductController();
@@ -20,6 +20,7 @@ router.get('/api/blogs', blogController.getAllBlogs)
 router.post('/api/reviews', reviewController.addReview);
 router.get('/api/reviews', reviewController.getAllReviews);
 router.get('/api/reviews/:reviewId', reviewController.getReviewDetails)
+router.put('/api/reviews/:reviewId', reviewController.editReviewByID)
 router.get('/api/reviews/:productId', reviewController.getReviewsByProductID)
 router.delete('/api/reviews/:reviewId', reviewController.deleteReviewByID)
 

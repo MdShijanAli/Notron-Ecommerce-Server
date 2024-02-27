@@ -29,6 +29,20 @@ class ReviewModal {
     const query = 'SELECT * FROM reviews WHERE product_id = ?'
     connection.query(query, [productId], cb)
   }
+
+  editReviewByID(reviewId, reviewData, cb){
+    const query = "UPDATE `reviews` SET `comment` = ?,`rating`=?,`title`=?,`name`=?,`email`=?,`product_id`=? WHERE id = ?";
+    const values = [
+      reviewData.comment,
+      reviewData.rating,
+      reviewData.title,
+      reviewData.name,
+      reviewData.email,
+      reviewData.product_id,
+      reviewId
+    ];
+    connection.query(query, values, cb)
+  }
   
   deleteReviewByID(reviewId, cb){
     const query = 'DELETE FROM reviews WHERE id = ?';

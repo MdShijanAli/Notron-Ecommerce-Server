@@ -1,4 +1,4 @@
-const ProductModel = require('../model/productModel');
+const ProductModel = require('../models/productModel');
 
 class ProductController {
   getAllProducts(req, res) {
@@ -21,7 +21,7 @@ class ProductController {
         console.error('Error getting product by ID:', err);
         res.status(500).send('Internal Server Error');
       } else {
-        res.json(result);
+        res.json(result.length > 0 ? result[0] : null)
       }
     });
   }
