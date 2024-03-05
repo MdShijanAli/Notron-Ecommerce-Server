@@ -17,7 +17,7 @@ class ReviewController{
             console.error('Error Getting Reviews for the Product', err);
             res.status(500).send('Internal Server Error');
           } else {
-            res.json({ message: 'Review Added successfully', status: 'success', response: result.length > 0 ? result[0] : null });
+            res.json({ message: 'Review Created successfully', status: 'success', response: result.length > 0 ? result[0] : null });
           }
         });
       }
