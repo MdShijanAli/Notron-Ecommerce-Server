@@ -14,7 +14,11 @@ router.get('/api/products', productController.getAllProducts);
 router.get('/api/products/:productId', productController.getProductById);
 
 // Blogs API
+router.post('/api/blogs', blogController.createBlog)
+router.put('/api/blogs/:blogId', blogController.updateBlogById)
 router.get('/api/blogs', blogController.getAllBlogs)
+router.get('/api/blogs/:blogId', blogController.getSingleBlogById)
+router.delete('/api/blogs/:blogId', blogController.deleteBlogById)
 
 // Reviews API
 router.post('/api/reviews', reviewController.addReview);
