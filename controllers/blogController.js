@@ -17,7 +17,7 @@ class BlogController {
             console.error('Error Getting Blog for this id', err);
             res.status(500).send('Internal Server Error');
           } else {
-            res.json({ message: 'Blog Created successfully', status: 'success', response: result.length > 0 ? result[0] : null });
+            res.json({ status: 'success', message: 'Executed Successfully', response: result.length > 0 ? result[0] : null });
           }
         });
       }
@@ -39,7 +39,7 @@ class BlogController {
             console.error('Error Getting Blog for this id', err);
             res.status(500).send('Internal Server Error');
           } else {
-            res.json({ status: 'success', message: 'Blog Updated successfully', response: result.length > 0 ? result[0] : null });
+            res.json({ status: 'success', message: 'Executed Successfully', response: result.length > 0 ? result[0] : null });
           }
         })
       }
@@ -54,7 +54,7 @@ class BlogController {
         res.status(500).send('Internal Server Error');
       }
       else{
-        res.json(result)
+        res.json({status: 'success', message: 'Executed Successfully', response: result})
       }
     })
   }
@@ -67,7 +67,7 @@ class BlogController {
         console.error('Error getting Blog by ID:', err);
         res.status(500).send('Internal Server Error');
       } else {
-        res.json(result.length > 0 ? result[0] : null)
+        res.json({status: 'success', message: 'Executed Successfully', response: result.length > 0 ? result[0] : null})
       }
     })
   }
@@ -80,7 +80,7 @@ class BlogController {
         console.error('Error Deleting Blog with this ID', err);
         res.status(500).send('Internal Server Error')
       }
-      res.json({ status: 'success', message: 'Blog deleted successfully' });
+      res.json({ status: 'success', message: 'Executed Successfully' });
     })
   }
 

@@ -10,8 +10,11 @@ const blogController = new BlogController();
 const reviewController = new ReviewController();
 
 // Products API
+router.post('/api/products', productController.createProduct);
+router.put('/api/products/:productId', productController.editProductById);
 router.get('/api/products', productController.getAllProducts);
 router.get('/api/products/:productId', productController.getProductById);
+router.delete('/api/products/:productId', productController.deleteProductById);
 
 // Blogs API
 router.post('/api/blogs', blogController.createBlog)

@@ -17,7 +17,7 @@ class ReviewController{
             console.error('Error Getting Reviews for the Product', err);
             res.status(500).send('Internal Server Error');
           } else {
-            res.json({ message: 'Review Created successfully', status: 'success', response: result.length > 0 ? result[0] : null });
+            res.json({ status: 'success', message: 'Executed Successfully', response:  result.length > 0 ? result[0] : null });
           }
         });
       }
@@ -39,7 +39,7 @@ class ReviewController{
             console.error('Error Getting Reviews for the Product', err);
             res.status(500).send('Internal Server Error');
           } else {
-            res.json({ message: 'Review Updated successfully', status: 'success', response: result.length > 0 ? result[0] : null });
+            res.json({ status: 'success', message: 'Executed Successfully', response:  result.length > 0 ? result[0] : null });
           }
         });
       }
@@ -54,7 +54,7 @@ class ReviewController{
         console.error('Error Getting Reviews with This ID', err)
         res.status(500).send('Internal Server Error')
       }else{
-        res.json(result.length > 0 ? result[0] : null)
+        res.json({status: 'success', message: 'Executed Successfully', response: result.length > 0 ? result[0] : null})
       }
     })
   }
@@ -66,7 +66,7 @@ class ReviewController{
         console.error('Error Getting Reviews', err);
         res.status(500).send('Internal Server Error')
       }else{
-        res.json(result)
+        res.json({status: 'success', message: 'Executed Successfully', response: result})
       }
     })
   }
@@ -79,7 +79,7 @@ class ReviewController{
         console.error('Error Getting Reviews with This ID', err)
         res.status(500).send('Internal Server Error')
       }else{
-        res.json(result)
+        res.json({status: 'success', message: 'Executed Successfully', response: result})
       }
     })
   }
@@ -92,7 +92,7 @@ class ReviewController{
         console.error('Error Deleting Review with this ID', err);
         res.status(500).send('Internal Server Error')
       }
-      res.json({ message: 'Review deleted successfully', status: 'success' });
+      res.json({ status: 'success',  message: 'Executed successfully' });
     })
   }
 
