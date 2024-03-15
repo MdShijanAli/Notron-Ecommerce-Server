@@ -17,7 +17,7 @@ class ReviewController{
             console.error('Error Getting Reviews for the Product', err);
             res.status(500).send('Internal Server Error');
           } else {
-            res.json({ status: 'success', message: 'Executed Successfully', response:  result.length > 0 ? result[0] : null });
+            res.json({ status: 'success', message: 'Executed Successfully', data:  result.length > 0 ? result[0] : null });
           }
         });
       }
@@ -39,7 +39,7 @@ class ReviewController{
             console.error('Error Getting Reviews for the Product', err);
             res.status(500).send('Internal Server Error');
           } else {
-            res.json({ status: 'success', message: 'Executed Successfully', response:  result.length > 0 ? result[0] : null });
+            res.json({ status: 'success', message: 'Executed Successfully', data:  result.length > 0 ? result[0] : null });
           }
         });
       }
@@ -54,7 +54,7 @@ class ReviewController{
         console.error('Error Getting Reviews with This ID', err)
         res.status(500).send('Internal Server Error')
       }else{
-        res.json({status: 'success', message: 'Executed Successfully', response: result.length > 0 ? result[0] : null})
+        res.json({status: 'success', message: 'Executed Successfully', data: result.length > 0 ? result[0] : null})
       }
     })
   }
@@ -66,7 +66,7 @@ class ReviewController{
         console.error('Error Getting Reviews', err);
         res.status(500).send('Internal Server Error')
       }else{
-        res.json({status: 'success', message: 'Executed Successfully', response: result})
+        res.json({status: 'success', message: 'Executed Successfully', data: result})
       }
     })
   }
@@ -79,7 +79,7 @@ class ReviewController{
         console.error('Error Getting Reviews with This ID', err)
         res.status(500).send('Internal Server Error')
       }else{
-        res.json({status: 'success', message: 'Executed Successfully', response: result})
+        res.json({status: 'success', message: 'Executed Successfully', data: result})
       }
     })
   }

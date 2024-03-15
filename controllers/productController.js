@@ -17,7 +17,7 @@ class ProductController {
             console.error('Error getting product by ID:', err);
             res.status(500).send('Internal Server Error');
           } else {
-            res.json({status: 'success', message: 'Executed Successfully', response: result.length > 0 ? result[0] : null });
+            res.json({status: 'success', message: 'Executed Successfully', data: result.length > 0 ? result[0] : null });
           }
         });
       }
@@ -39,7 +39,7 @@ class ProductController {
             console.error('Error getting product by ID:', err);
             res.status(500).send('Internal Server Error');
           } else {
-            res.json({status: 'success', message: 'Executed Successfully', response: result.length > 0 ? result[0] : null });
+            res.json({status: 'success', message: 'Executed Successfully', data: result.length > 0 ? result[0] : null });
           }
         });
       }
@@ -53,7 +53,7 @@ class ProductController {
         console.error('Error getting products:', err);
         res.status(500).send('Internal Server Error');
       } else {
-        res.json({status: 'success', message: 'Executed Successfully', response: result});
+        res.json({status: 'success', message: 'Executed Successfully', data: result});
       }
     });
   }
@@ -66,13 +66,13 @@ class ProductController {
         console.error('Error getting product by ID:', err);
         res.status(500).send('Internal Server Error');
       } else {
-        res.json({status: 'success', message: 'Executed Successfully', response: result.length > 0 ? result[0] : null})
+        res.json({status: 'success', message: 'Executed Successfully', data: result.length > 0 ? result[0] : null})
       }
     });
   }
 
   deleteProductById(req, res){
-    const productId = req.params.id;
+    const productId = req.params.productId;
     const productModel = new ProductModel();
     productModel.deleteProductById(productId, (err, result)=>{
       if (err) {

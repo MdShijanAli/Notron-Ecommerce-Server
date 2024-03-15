@@ -50,7 +50,7 @@ class ProductModel {
   }
 
   deleteProductById(productId, cb){
-    const query = "DELETE FROM `products` WHERE id = ?";
+    const query = "DELETE FROM products WHERE id = ?";
     connection.query(query, [productId], cb)
   }
 }
