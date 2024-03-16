@@ -28,7 +28,7 @@ router.post('/api/reviews', reviewController.addReview);
 router.get('/api/reviews', reviewController.getAllReviews);
 router.get('/api/reviews/:reviewId', reviewController.getReviewDetails)
 router.put('/api/reviews/:reviewId', reviewController.editReviewByID)
-router.get('/api/reviews/:productId', reviewController.getReviewsByProductID)
+router.get('/api/reviews/product/:productId', reviewController.getReviewsByProductID)
 router.delete('/api/reviews/:reviewId', reviewController.deleteReviewByID)
 
 module.exports = router;

@@ -21,12 +21,12 @@ class ReviewModal {
   }
 
   getAllReviews(cb){
-    const query = 'SELECT * from blogs';
+    const query = 'SELECT * from reviews';
     connection.query(query, cb)
   }
 
   getReviewsByProductID(productId, cb){
-    const query = 'SELECT * FROM reviews WHERE product_id = ?'
+    const query = 'SELECT * FROM `reviews` WHERE `product_id` = ?'
     connection.query(query, [productId], cb)
   }
 
