@@ -12,6 +12,18 @@ function categoryModel(){
     connection.query(query, values, cb)
   }
 
+  const getAllCategory = (page = 1, limit = 20, cb) => {
+    const skip = (page - 1) * limit;
+    const query = `SELECT * FROM categories LIMIT ${skip}, ${limit}`
+    connection.query(query, (err, results)=>{
+      if(err){
+        cb(err)
+      }else{
+        cb(null, results)
+      }
+    })
+  }
+
   const getCategoryById = (categoryId, cb) => {
      const query = "SELECT * FROM categories WHERE id = ?";
      connection.query(query, [categoryId], (err, result)=>{
@@ -26,6 +38,7 @@ function categoryModel(){
 
   return{
     createCategory,
+    getAllCategory,
     getCategoryById
   }
 }

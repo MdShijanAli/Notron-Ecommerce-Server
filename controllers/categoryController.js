@@ -24,6 +24,32 @@ function categoryController() {
     })
   }
 
+  const getAllCategory = (req, res) => {
+     const {page = 1, limit = 20 } = req.query;
+     const pageNum = parseInt(page);
+     const limitNum = parseInt(limit);
+     categoryModel.getAllCategory(pageNum, limitNum, (err, result)=>{
+      try {
+
+        const total = result?.length;
+  
+        formatResultData({
+          res,
+          total,
+          limitNum,
+          pageNum,
+          apiEndPoint: 'categories',
+          result: result,
+          totalResults: total
+        })
+  
+      } catch (err) {
+        console.error('Error getting Categories:', err);
+        res.status(500).json({ status: 'error', message: 'Internal Server Error' });
+      }
+    })
+  }
+
   const getCategoryById = (req, res) => {
     const categoryId = req.params.categoryID;
     try{
@@ -45,6 +71,7 @@ function categoryController() {
 
   return{
     createCategory,
+    getAllCategory,
     getCategoryById
   }
 }
