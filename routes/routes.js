@@ -1,11 +1,12 @@
 // routes.js
 const express = require('express');
-const ProductController = require('../controllers/productController');
 const BlogController = require('../controllers/blogController')
 const ReviewController = require('../controllers/reviewController')
 
 const router = express.Router();
-const productController = new ProductController();
+const productController = require('../controllers/productController')();
+const brandController = require('../controllers/brandController')();
+const categoryController = require('../controllers/categoryController')();
 const blogController = new BlogController();
 const reviewController = new ReviewController();
 
@@ -13,6 +14,7 @@ const reviewController = new ReviewController();
 router.post('/api/products', productController.createProduct);
 router.put('/api/products/:productId', productController.editProductById);
 router.get('/api/products', productController.getAllProducts);
+router.get('/api/products/search', productController.searchProducts);
 router.get('/api/products/:productId', productController.getProductById);
 router.delete('/api/products/:productId', productController.deleteProductById);
 
@@ -30,5 +32,19 @@ router.get('/api/reviews/:reviewId', reviewController.getReviewDetails)
 router.put('/api/reviews/:reviewId', reviewController.editReviewByID)
 router.get('/api/reviews/product/:productId', reviewController.getReviewsByProductID)
 router.delete('/api/reviews/:reviewId', reviewController.deleteReviewByID)
+
+// Brands API
+router.post('/api/brands', brandController.createBrand);
+router.get('/api/brands', brandController.getAllBrands);
+router.get('/api/brands/:brandID', brandController.getBrandById);
+router.put('/api/brands/:brandID', brandController.editBrand);
+router.delete('/api/brands/:brandID', brandController.deleteBrand);
+
+// Categories API
+router.post('/api/categories', categoryController.createCategory);
+// router.get('/api/categories', brandController.getAllBrands);
+router.get('/api/categories/:categoryID', categoryController.getCategoryById);
+// router.put('/api/categories/:brandID', brandController.editBrand);
+// router.delete('/api/categories/:brandID', brandController.deleteBrand);
 
 module.exports = router;
