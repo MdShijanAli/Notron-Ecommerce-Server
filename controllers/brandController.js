@@ -3,57 +3,57 @@ const formatResultData = require("../utils/formatResultsData");
 
 function brandController() {
 
-  const createBrand=(req, res)=>{
+  const createBrand = (req, res) => {
     const brandData = req.body;
-    brandModel.createBrand(brandData, (err, result)=>{
-      if(err){
+    brandModel.createBrand(brandData, (err, result) => {
+      if (err) {
         console.error('Error Creating brands:', err);
         res.status(500).send('Internal Server Error');
       }
-      else{
+      else {
         const brandId = result.insertId;
         brandModel.getBrandById(brandId, (err, result) => {
           if (err) {
             console.error('Error getting Brand by ID:', err);
             res.status(500).send('Internal Server Error');
           } else {
-            res.json({status: 'success', message: 'Executed Successfully', data: result.length > 0 ? result[0] : null });
+            res.json({ status: 'success', message: 'Executed Successfully', data: result.length > 0 ? result[0] : null });
           }
         });
       }
     })
   }
 
-  const editBrand=(req, res)=>{
+  const editBrand = (req, res) => {
     const brandData = req.body;
     const brandId = req.params.brandID;
-    brandModel.editBrand(brandData, brandId, (err, result)=>{
-      if(err){
+    brandModel.editBrand(brandData, brandId, (err, result) => {
+      if (err) {
         console.error('Error UPDATING brands:', err);
         res.status(500).send('Internal Server Error');
       }
-      else{
+      else {
         brandModel.getBrandById(brandId, (err, result) => {
           if (err) {
             console.error('Error getting Brand by ID:', err);
             res.status(500).send('Internal Server Error');
           } else {
-            res.json({status: 'success', message: 'Executed Successfully', data: result.length > 0 ? result[0] : null });
+            res.json({ status: 'success', message: 'Executed Successfully', data: result.length > 0 ? result[0] : null });
           }
         });
       }
     })
   }
 
-  const getAllBrands = (req, res)=>{
-    const {page = 1, limit = 20} = req.query;
+  const getAllBrands = (req, res) => {
+    const { page = 1, limit = 20 } = req.query;
     let pageNum = parseInt(page);
     let limitNum = parseInt(limit);
-    brandModel.getAllBrands(pageNum, limitNum, (err, result)=>{
+    brandModel.getAllBrands(pageNum, limitNum, (err, result) => {
       try {
 
         const total = result?.length;
-  
+
         formatResultData({
           res,
           total,
@@ -63,7 +63,7 @@ function brandController() {
           result: result,
           totalResults: total
         })
-  
+
       } catch (err) {
         console.error('Error getting Brnads:', err);
         res.status(500).json({ status: 'error', message: 'Internal Server Error' });
@@ -71,15 +71,15 @@ function brandController() {
     })
   }
 
-  const getBrandById = (req, res)=> {
+  const getBrandById = (req, res) => {
     const brandId = req.params.brandID;
-    try{
+    try {
       brandModel.getBrandById(brandId, (err, result) => {
         if (err) {
           console.error('Error getting Brand by ID:', err);
           res.status(404).json({ status: 'Bad Request', message: 'Brand not found' });
         } else {
-          res.json({status: 'success', message: 'Executed Successfully', data: result.length > 0 ? result[0] : null})
+          res.json({ status: 'success', message: 'Executed Successfully', data: result.length > 0 ? result[0] : null })
         }
       });
     }
@@ -89,19 +89,19 @@ function brandController() {
     }
   }
 
-  const deleteBrand = (req, res)=>{
+  const deleteBrand = (req, res) => {
     const brandId = req.params.brandID;
-    brandModel.deleteBrand(brandId, (err, result)=>{
+    brandModel.deleteBrand(brandId, (err, result) => {
       if (err) {
         console.error('Error Deleting product by ID:', err);
         res.status(500).send('Internal Server Error');
       } else {
-        res.json({ status: 'success' , message: 'Executed Successfully' });
+        res.json({ status: 'success', message: 'Executed Successfully' });
       }
     })
   }
 
-  return{
+  return {
     createBrand,
     getAllBrands,
     getBrandById,

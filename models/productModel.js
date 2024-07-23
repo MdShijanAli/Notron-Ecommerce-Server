@@ -1,8 +1,8 @@
 const connection = require('../database/db'); // assuming you have a file for database connection
 
-function productModel(){
+function productModel() {
 
-  const createProduct = (productData, cb)=> {
+  const createProduct = (productData, cb) => {
     const query = "INSERT INTO products (`img`, `code`, `category`, `title`, `price`, `description`, `long_description`, `information`, `discountPrice`, `size`, `color`, `offer`, `status`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
     const values = [
       JSON.stringify(productData.img),
@@ -22,7 +22,7 @@ function productModel(){
     connection.query(query, values, cb)
   }
 
-  const editProductById = (productId, productData, cb)=>{
+  const editProductById = (productId, productData, cb) => {
     const query = "UPDATE `products` SET `img`= ?, `code`=?, `category`=?,`title`=?,`price`=?,`description`=?,`long_description`=?,`information`=?,`discountPrice`=?,`size`=?,`color`=?,`offer`=?,`status`=? WHERE id = ?";
     const values = [
       JSON.stringify(productData.img),
@@ -49,52 +49,52 @@ function productModel(){
     const totalQuery = `SELECT * FROM products`;
     // const query = `SELECT * FROM products LIMIT ${skip}, ${limit}`;
     const query = "SELECT b.id, b.name, b.stock, p.* FROM `brands` b, `products` p WHERE p.brand_id = b.id";
-     connection.query(query, (err, results) => {
+    connection.query(query, (err, results) => {
       if (err) {
         cb(err);
       } else {
         results.forEach(product => {
-          
+
           // Ensure to safely parse JSON fields
           try {
             product.img = JSON.parse(product.img);
             product.category = JSON.parse(product.category);
             product.size = JSON.parse(product.size);
             product.color = JSON.parse(product.color);
-            product.brand_id = {id: product.brand_id, name:product.name, stock: product.stock}
+            product.brand_id = { id: product.brand_id, name: product.name, stock: product.stock }
           } catch (parseError) {
             console.error("Error parsing JSON fields:", parseError);
           }
         });
-         cb(null, results);
+        cb(null, results);
       }
     });
-    
+
   }
 
   // Global Search
-  const searchProducts = (page = 1, limit = 20, searchQuery, cb)=> {
+  const searchProducts = (page = 1, limit = 20, searchQuery, cb) => {
     const skip = (page - 1) * limit;
-    const query = `SELECT * FROM products WHERE title LIKE '%${searchQuery}%' OR code LIKE '%${searchQuery}%' OR description LIKE '%${searchQuery}%' OR long_description LIKE '%${searchQuery}%' OR information LIKE '%${searchQuery}%' OR status LIKE '%${searchQuery}%' LIMIT ${skip}, ${limit}`
-     connection.query(query, (err, results)=>{
-      if(err){
+    const query = `SELECT * FROM products WHERE title LIKE '%${ searchQuery }%' OR code LIKE '%${ searchQuery }%' OR description LIKE '%${ searchQuery }%' OR long_description LIKE '%${ searchQuery }%' OR information LIKE '%${ searchQuery }%' OR status LIKE '%${ searchQuery }%' LIMIT ${ skip }, ${ limit }`
+    connection.query(query, (err, results) => {
+      if (err) {
         cb(err)
       } else {
         results.forEach(product => {
-          
+
           // Ensure to safely parse JSON fields
           try {
             product.img = JSON.parse(product.img);
             product.category = JSON.parse(product.category);
             product.size = JSON.parse(product.size);
             product.color = JSON.parse(product.color);
-            product.brand_id = {id: product.brand_id, name:product.name, stock: product.stock}
+            product.brand_id = { id: product.brand_id, name: product.name, stock: product.stock }
           } catch (parseError) {
             console.error("Error parsing JSON fields:", parseError);
           }
         });
         console.log('result:::::::', results);
-         cb(null, results);
+        cb(null, results);
       }
     });
   }
@@ -114,15 +114,15 @@ function productModel(){
           product.category = JSON.parse(product.category);
           product.size = JSON.parse(product.size);
           product.color = JSON.parse(product.color);
-          product.brand_id = {id: product.brand_id, name:product.name, stock: product.stock}
+          product.brand_id = { id: product.brand_id, name: product.name, stock: product.stock }
         }
         cb(null, result);
       }
     });
   }
-  
 
-  const deleteProductById = (productId, cb)=>{
+
+  const deleteProductById = (productId, cb) => {
     const query = "DELETE FROM products WHERE id = ?";
     connection.query(query, [productId], cb)
   }

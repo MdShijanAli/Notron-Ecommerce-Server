@@ -44,7 +44,7 @@ router.delete('/api/brands/:brandID', brandController.deleteBrand);
 router.post('/api/categories', categoryController.createCategory);
 router.get('/api/categories', categoryController.getAllCategory);
 router.get('/api/categories/:categoryID', categoryController.getCategoryById);
-// router.put('/api/categories/:brandID', brandController.editBrand);
-// router.delete('/api/categories/:brandID', brandController.deleteBrand);
+router.put('/api/categories/:categoryID', categoryController.editCategory);
+router.delete('/api/categories/:categoryID', categoryController.deleteCategory);
 
 module.exports = router;
