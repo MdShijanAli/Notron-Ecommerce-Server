@@ -21,17 +21,26 @@ function categoryModel() {
     connection.query(query, values, cb)
   }
 
-  const getAllCategory = (page = 1, limit = 20, cb) => {
+  const getAllCategory = (page = 1, limit = 20, sort_by = 'created_at', sort_order = 'DESC', cb) => {
     const skip = (page - 1) * limit;
-    const query = `SELECT * FROM categories LIMIT ${ skip }, ${ limit }`
-    connection.query(query, (err, results) => {
+    const totalQuery = `SELECT COUNT(*) as count FROM categories`;
+    const query = `SELECT * FROM categories ORDER BY ${ sort_by } ${ sort_order } LIMIT ${ skip }, ${ limit }`
+    connection.query(totalQuery, (err, totalResult) => {
       if (err) {
-        cb(err)
-      } else {
-        cb(null, results)
+        return cb(err);
       }
-    })
-  }
+
+      const total = totalResult[0].count;
+
+      connection.query(query, (err, results) => {
+        if (err) {
+          cb(err);
+        } else {
+          cb(null, { results, total });
+        }
+      });
+    });
+  };
 
   const getCategoryById = (categoryId, cb) => {
     const query = "SELECT * FROM categories WHERE id = ?";
