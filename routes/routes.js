@@ -1,12 +1,17 @@
 // routes.js
 const express = require('express');
 const BlogController = require('../controllers/blogController')
-const ReviewController = require('../controllers/reviewController')
-
-const router = express.Router();
+const ReviewController = require('../controllers/reviewController');
+const ownerController = require('../controllers/ownerController')();
+const managerController = require('../controllers/managerController')();
+const salesMansController = require('../controllers/salesMansController')();
 const productController = require('../controllers/productController')();
 const brandController = require('../controllers/brandController')();
 const categoryController = require('../controllers/categoryController')();
+const supplierController = require('../controllers/supplierController')();
+const clientController = require('../controllers/clientController')();
+
+const router = express.Router();
 const blogController = new BlogController();
 const reviewController = new ReviewController();
 
@@ -46,5 +51,45 @@ router.get('/api/categories', categoryController.getAllCategory);
 router.get('/api/categories/:categoryID', categoryController.getCategoryById);
 router.put('/api/categories/:categoryID', categoryController.editCategory);
 router.delete('/api/categories/:categoryID', categoryController.deleteCategory);
+
+// Supplier API
+router.post('/api/suppliers', supplierController.createSupplier);
+router.get('/api/suppliers', supplierController.getAllSuppliers);
+router.get('/api/suppliers/search', supplierController.searchSuppliers);
+router.get('/api/suppliers/:supplierID', supplierController.getSupplierById);
+router.put('/api/suppliers/:supplierID', supplierController.editSupplier);
+router.delete('/api/suppliers/:supplierID', supplierController.deleteSupplier);
+
+// Clients API
+router.post('/api/clients', clientController.createClient);
+router.get('/api/clients', clientController.getAllClients);
+router.get('/api/clients/search', clientController.searchClients);
+router.get('/api/clients/:clientID', clientController.getClientById);
+router.put('/api/clients/:clientID', clientController.editClient);
+router.delete('/api/clients/:clientID', clientController.deleteClient);
+
+// Sales Mans API
+router.post('/api/sales_mans', salesMansController.createSalesMans);
+router.get('/api/sales_mans', salesMansController.getAllSalesMans);
+router.get('/api/sales_mans/search', salesMansController.searchSalesMans);
+router.get('/api/sales_mans/:salesMansID', salesMansController.getSalesMansById);
+router.put('/api/sales_mans/:salesMansID', salesMansController.editSalesMans);
+router.delete('/api/sales_mans/:salesMansID', salesMansController.deleteSalesMans);
+
+// Manager API
+router.post('/api/managers', managerController.createManager);
+router.get('/api/managers', managerController.getAllManagers);
+router.get('/api/managers/search', managerController.searchManagers);
+router.get('/api/managers/:managerID', managerController.getManagerById);
+router.put('/api/managers/:managerID', managerController.editManager);
+router.delete('/api/managers/:managerID', managerController.deleteManager);
+
+// Owner API
+router.post('/api/owners', ownerController.createOwner);
+router.get('/api/owners', ownerController.getAllOwners);
+router.get('/api/owners/search', ownerController.searchOwners);
+router.get('/api/owners/:ownerID', ownerController.getOwnerById);
+router.put('/api/owners/:ownerID', ownerController.editOwner);
+router.delete('/api/owners/:ownerID', ownerController.deleteOwner);
 
 module.exports = router;
