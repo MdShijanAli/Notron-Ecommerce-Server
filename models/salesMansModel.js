@@ -15,9 +15,9 @@ function salesMansModel() {
     connection.query(query, values, cb)
   }
 
-  const editSalesMans = (SalesMansData, SalesMansId, cb) =>{
-     const query = "UPDATE `sales_mans` SET `first_name`=?,`last_name`=?,`phone`=?,`email`=?,`photo`=?,`address`=? WHERE id = ?";
-     const values = [
+  const editSalesMans = (SalesMansData, SalesMansId, cb) => {
+    const query = "UPDATE `sales_mans` SET `first_name`=?,`last_name`=?,`phone`=?,`email`=?,`photo`=?,`address`=? WHERE id = ?";
+    const values = [
       SalesMansData.first_name,
       SalesMansData.last_name,
       SalesMansData.phone,
@@ -26,13 +26,13 @@ function salesMansModel() {
       SalesMansData.address,
       SalesMansId
     ];
-     connection.query(query, values, cb)
+    connection.query(query, values, cb)
   }
 
-  const getAllSalesMans = (page = 1, limit =  20, sort_by = 'created_at', sort_order = 'DESC', cb) => {
+  const getAllSalesMans = (page = 1, limit = 20, sort_by = 'created_at', sort_order = 'DESC', cb) => {
     const skip = (page - 1) * limit;
     const totalQuery = `SELECT COUNT(*) as count FROM sales_mans`;
-    const query = `SELECT * FROM sales_mans ORDER BY ${ sort_by } ${ sort_order } LIMIT ${skip}, ${limit}`;
+    const query = `SELECT * FROM sales_mans ORDER BY ${ sort_by } ${ sort_order } LIMIT ${ skip }, ${ limit }`;
     connection.query(totalQuery, (err, totalResult) => {
       if (err) {
         return cb(err);
@@ -53,26 +53,36 @@ function salesMansModel() {
   const getSalesMansById = (SalesMansId, cb) => {
     console.log('Get SalesMans ID', SalesMansId);
     const query = "SELECT * FROM `sales_mans` WHERE id = ?";
-    connection.query(query, [SalesMansId], (err, result)=>{
-      if(err){
+    connection.query(query, [SalesMansId], (err, result) => {
+      if (err) {
         cb(err)
-      }else{
+      } else {
         cb(null, result)
       }
     })
   }
 
-  const searchSalesMans = (page = 1, limit = 20, searchQuery, cb) =>{
+  const searchSalesMans = (page = 1, limit = 20, searchQuery, sort_by = 'created_at', sort_order = 'DESC', cb) => {
     const skip = (page - 1) * limit;
-    const query = `SELECT * FROM sales_mans WHERE first_name LIKE '%${ searchQuery }%' OR last_name LIKE '%${ searchQuery }%' OR phone LIKE '%${ searchQuery }%' OR email LIKE '%${ searchQuery }%' OR address LIKE '%${ searchQuery }%' LIMIT ${ skip }, ${ limit }`
-    connection.query(query, (err, results)=>{
-      if(err){
-        cb(err)
-      }else{
-        cb(null, results)
+    const totalQuery = `SELECT COUNT(*) as count FROM sales_mans WHERE first_name LIKE '%${ searchQuery }%' OR last_name LIKE '%${ searchQuery }%' OR phone LIKE '%${ searchQuery }%' OR email LIKE '%${ searchQuery }%' OR address LIKE '%${ searchQuery }%'`;
+    const query = `SELECT * FROM sales_mans WHERE first_name LIKE '%${ searchQuery }%' OR last_name LIKE '%${ searchQuery }%' OR phone LIKE '%${ searchQuery }%' OR email LIKE '%${ searchQuery }%' OR address LIKE '%${ searchQuery }%' ORDER BY ${ sort_by } ${ sort_order } LIMIT ${ skip }, ${ limit }`
+
+    connection.query(totalQuery, (err, totalResult) => {
+      if (err) {
+        return cb(err);
       }
-    })
-  }
+
+      const total = totalResult[0].count;
+
+      connection.query(query, (err, results) => {
+        if (err) {
+          cb(err);
+        } else {
+          cb(null, { results, total });
+        }
+      });
+    });
+  };
 
   const deleteSalesMans = (SalesMansId, cb) => {
     const query = "DELETE FROM `sales_mans` WHERE id = ?"
@@ -80,13 +90,13 @@ function salesMansModel() {
   }
 
 
-  return{
-     createSalesMans,
-     editSalesMans,
-     getAllSalesMans,
-     getSalesMansById,
-     searchSalesMans,
-     deleteSalesMans
+  return {
+    createSalesMans,
+    editSalesMans,
+    getAllSalesMans,
+    getSalesMansById,
+    searchSalesMans,
+    deleteSalesMans
   }
 }
 
