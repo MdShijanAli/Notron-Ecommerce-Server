@@ -21,18 +21,26 @@ function brandModel() {
     connection.query(query, values, cb)
   }
 
-  const getAllBrands = (page = 1, limit = 20, cb) => {
+  const getAllBrands = (page = 1, limit = 20, sort_by = 'created_at', sort_order = 'DESC', cb) => {
     const skip = (page - 1) * limit;
-    const total = "SELECT * from brands";
-    const query = `SELECT * from brands LIMIT ${ skip }, ${ limit }`;
-    connection.query(query, (err, results) => {
+    const totalQuery = `SELECT COUNT(*) as count FROM brands`;
+    const query = `SELECT * from brands ORDER BY ${sort_by} ${sort_order} LIMIT ${ skip }, ${ limit }`;
+    connection.query(totalQuery, (err, totalResult) => {
       if (err) {
-        cb(err)
-      } else {
-        cb(null, results)
+        return cb(err);
       }
-    })
-  }
+
+      const total = totalResult[0].count;
+
+      connection.query(query, (err, results) => {
+        if (err) {
+          cb(err);
+        } else {
+          cb(null, { results, total });
+        }
+      });
+    });
+  };
 
   const getBrandById = (brandId, cb) => {
     const query = 'SELECT * FROM brands WHERE id = ?;';

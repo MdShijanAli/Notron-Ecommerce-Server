@@ -50,7 +50,8 @@ function productController() {
     const { page = 1, limit = 20 } = req.query;
     let pageNum = parseInt(page);
     let limitNum = parseInt(limit);
-    productModel.getAllProducts(pageNum, limitNum, async (err, data) => {
+    // let sort = `${sort_by} ${sort_order.toUpperCase()}`
+    productModel.getAllProducts(pageNum, limitNum, (err, data) => {
 
       try {
 

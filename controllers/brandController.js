@@ -46,13 +46,14 @@ function brandController() {
   }
 
   const getAllBrands = (req, res) => {
-    const { page = 1, limit = 20 } = req.query;
+    const { page = 1, limit = 20, sort_by = 'created_at', sort_order = 'DESC' } = req.query;
     let pageNum = parseInt(page);
     let limitNum = parseInt(limit);
-    brandModel.getAllBrands(pageNum, limitNum, (err, result) => {
+    const sortOrder = sort_order.toUpperCase()
+    brandModel.getAllBrands(pageNum, limitNum, sort_by, sortOrder, (err, data) => {
       try {
 
-        const total = result?.length;
+        const { results, total } = data;
 
         formatResultData({
           res,
@@ -60,7 +61,7 @@ function brandController() {
           limitNum,
           pageNum,
           apiEndPoint: 'brands',
-          result: result,
+          result: results,
           totalResults: total
         })
 

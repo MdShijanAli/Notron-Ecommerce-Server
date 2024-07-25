@@ -45,7 +45,11 @@ function productModel() {
 
 
   const getAllProducts = (page = 1, limit = 20, cb) => {
+    // console.log('Seort=======>', sort);
     const skip = (page - 1) * limit
+    // Default sorting if none is provided
+    // const dynamicSort = sort.match(/^[\w]+ (ASC|DESC)$/i) ? sort : 'created_at ASC'; // Validate sort parameter
+
     const totalQuery = `SELECT COUNT(*) as count FROM products`;
     const query = `SELECT b.id, b.name, b.stock, p.* FROM brands b, products p WHERE p.brand_id = b.id LIMIT ${skip}, ${limit}`;
     connection.query(totalQuery, (err, totalResult) => {
