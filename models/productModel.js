@@ -83,7 +83,16 @@ function productModel() {
   // Global Search
   const searchProducts = (page = 1, limit = 20, searchQuery, cb) => {
     const skip = (page - 1) * limit;
-    const totalQuery = `SELECT COUNT(*) as count FROM products`;
+    const totalQuery = `
+    SELECT COUNT(*) as count 
+    FROM products 
+    WHERE title LIKE '%${searchQuery}%' 
+    OR code LIKE '%${searchQuery}%' 
+    OR description LIKE '%${searchQuery}%' 
+    OR long_description LIKE '%${searchQuery}%' 
+    OR information LIKE '%${searchQuery}%' 
+    OR status LIKE '%${searchQuery}%'
+  `;
     const query = `SELECT * FROM products WHERE title LIKE '%${ searchQuery }%' OR code LIKE '%${ searchQuery }%' OR description LIKE '%${ searchQuery }%' OR long_description LIKE '%${ searchQuery }%' OR information LIKE '%${ searchQuery }%' OR status LIKE '%${ searchQuery }%' LIMIT ${ skip }, ${ limit }`
 
     connection.query(totalQuery, (err, totalResult) => {
