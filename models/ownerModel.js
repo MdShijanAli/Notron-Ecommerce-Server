@@ -29,10 +29,10 @@ function ownerModel() {
     connection.query(query, values, cb)
   }
 
-  const getAllOwners = (page = 1, limit = 20, cb) => {
+  const getAllOwners = (page = 1, limit = 20, sort_by = 'created_at', sort_order = 'DESC', cb) => {
     const skip = (page - 1) * limit;
     const totalQuery = `SELECT COUNT(*) as count FROM owners`;
-    const query = `SELECT * FROM owners LIMIT ${ skip }, ${ limit }`;
+    const query = `SELECT * FROM owners ORDER BY ${ sort_by } ${ sort_order } LIMIT ${ skip }, ${ limit }`;
 
     connection.query(totalQuery, (err, totalResult) => {
       if (err) {
