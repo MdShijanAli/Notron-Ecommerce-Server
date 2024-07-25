@@ -49,10 +49,10 @@ function ownerController() {
     const {page =  1, limit = 20} = req.query;
     const pageNum = parseInt(page);
     const limitNum = parseInt(limit);
-    ownerModel.getAllOwners(pageNum, limitNum, (err, result)=>{
+    ownerModel.getAllOwners(pageNum, limitNum, (err, data)=>{
       try {
 
-        const total = result?.length;
+        const { results, total } = data;
 
         formatResultData({
           res,
@@ -60,7 +60,7 @@ function ownerController() {
           limitNum,
           pageNum,
           apiEndPoint: 'owners',
-          result: result,
+          result: results,
           totalResults: total
         })
 

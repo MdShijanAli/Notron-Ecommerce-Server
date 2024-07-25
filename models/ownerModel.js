@@ -29,17 +29,28 @@ function ownerModel() {
      connection.query(query, values, cb)
   }
 
-  const getAllOwners = (page = 1, limit =  20, cb) => {
+  const getAllOwners = (page = 1, limit = 20, cb) => {
     const skip = (page - 1) * limit;
+    const totalQuery = `SELECT COUNT(*) as count FROM owners`;
     const query = `SELECT * FROM owners LIMIT ${skip}, ${limit}`;
-    connection.query(query, (err, results)=>{
-      if(err){
-        cb(err)
-      }else{
-        cb(null, results)
+  
+    connection.query(totalQuery, (err, totalResult) => {
+      if (err) {
+        return cb(err);
       }
-    })
-  }
+  
+      const total = totalResult[0].count;
+  
+      connection.query(query, (err, results) => {
+        if (err) {
+          cb(err);
+        } else {
+          cb(null, { results, total });
+        }
+      });
+    });
+  };
+  
 
   const getOwnerById = (ownerId, cb) => {
     console.log('Get owner ID', ownerId);

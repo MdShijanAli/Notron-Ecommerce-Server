@@ -46,13 +46,21 @@ function productModel() {
 
   const getAllProducts = (page = 1, limit = 20, cb) => {
     const skip = (page - 1) * limit
-    const totalQuery = `SELECT * FROM products`;
-    // const query = `SELECT * FROM products LIMIT ${skip}, ${limit}`;
-    const query = "SELECT b.id, b.name, b.stock, p.* FROM `brands` b, `products` p WHERE p.brand_id = b.id";
-    connection.query(query, (err, results) => {
+    const totalQuery = `SELECT COUNT(*) as count FROM products`;
+    const query = `SELECT b.id, b.name, b.stock, p.* FROM brands b, products p WHERE p.brand_id = b.id LIMIT ${skip}, ${limit}`;
+    connection.query(totalQuery, (err, totalResult) => {
       if (err) {
-        cb(err);
-      } else {
+        return cb(err);
+      }
+  
+      const total = totalResult[0].count;
+
+      connection.query(query, (err, results) => {
+        if (err) {
+          cb(err);
+        }
+      
+      else {
         results.forEach(product => {
 
           // Ensure to safely parse JSON fields
@@ -66,20 +74,31 @@ function productModel() {
             console.error("Error parsing JSON fields:", parseError);
           }
         });
-        cb(null, results);
+        cb(null, { results, total });
       }
     });
-
-  }
+  });
+};
 
   // Global Search
   const searchProducts = (page = 1, limit = 20, searchQuery, cb) => {
     const skip = (page - 1) * limit;
+    const totalQuery = `SELECT COUNT(*) as count FROM products`;
     const query = `SELECT * FROM products WHERE title LIKE '%${ searchQuery }%' OR code LIKE '%${ searchQuery }%' OR description LIKE '%${ searchQuery }%' OR long_description LIKE '%${ searchQuery }%' OR information LIKE '%${ searchQuery }%' OR status LIKE '%${ searchQuery }%' LIMIT ${ skip }, ${ limit }`
-    connection.query(query, (err, results) => {
+
+    connection.query(totalQuery, (err, totalResult) => {
       if (err) {
-        cb(err)
-      } else {
+        return cb(err);
+      }
+  
+      const total = totalResult[0].count;
+
+      connection.query(query, (err, results) => {
+        if (err) {
+          cb(err);
+        }
+      
+      else {
         results.forEach(product => {
 
           // Ensure to safely parse JSON fields
@@ -93,11 +112,11 @@ function productModel() {
             console.error("Error parsing JSON fields:", parseError);
           }
         });
-        console.log('result:::::::', results);
-        cb(null, results);
-      }
+          cb(null, { results, total });
+        }
+      });
     });
-  }
+  };
 
   const getProductById = (productId, cb) => {
     // const query = 'SELECT * FROM products WHERE id = ?;';
