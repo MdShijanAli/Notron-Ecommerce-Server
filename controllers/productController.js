@@ -50,10 +50,12 @@ function productController() {
     const { page = 1, limit = 20 } = req.query;
     let pageNum = parseInt(page);
     let limitNum = parseInt(limit);
-    productModel.getAllProducts(pageNum, limitNum, async (err, result) => {
+    // let sort = `${sort_by} ${sort_order.toUpperCase()}`
+    productModel.getAllProducts(pageNum, limitNum, (err, data) => {
+
       try {
 
-        const total = result?.length;
+        const {results, total} = data
 
         formatResultData({
           res,
@@ -61,7 +63,7 @@ function productController() {
           limitNum,
           pageNum,
           apiEndPoint: 'products',
-          result: result,
+          result: results,
           totalResults: total
         })
 
@@ -78,10 +80,10 @@ function productController() {
     const { page = 1, limit = 20, search = "" } = req.query;
     let pageNum = parseInt(page);
     let limitNum = parseInt(limit);
-    productModel.searchProducts(pageNum, limitNum, search, async (err, result) => {
+    productModel.searchProducts(pageNum, limitNum, search, async (err, data) => {
       try {
 
-        const total = result?.length;
+        const {results, total} = data
 
         formatResultData({
           res,
@@ -89,7 +91,7 @@ function productController() {
           limitNum,
           pageNum,
           apiEndPoint: 'products',
-          result: result,
+          result: results,
           totalResults: total
         })
 

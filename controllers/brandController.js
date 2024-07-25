@@ -46,13 +46,14 @@ function brandController() {
   }
 
   const getAllBrands = (req, res) => {
-    const { page = 1, limit = 20 } = req.query;
+    const { page = 1, limit = 20, sort_by = 'created_at', sort_order = 'DESC' } = req.query;
     let pageNum = parseInt(page);
     let limitNum = parseInt(limit);
-    brandModel.getAllBrands(pageNum, limitNum, (err, result) => {
+    const sortOrder = sort_order.toUpperCase()
+    brandModel.getAllBrands(pageNum, limitNum, sort_by, sortOrder, (err, data) => {
       try {
 
-        const total = result?.length;
+        const { results, total } = data;
 
         formatResultData({
           res,
@@ -60,12 +61,39 @@ function brandController() {
           limitNum,
           pageNum,
           apiEndPoint: 'brands',
-          result: result,
+          result: results,
           totalResults: total
         })
 
       } catch (err) {
         console.error('Error getting Brnads:', err);
+        res.status(500).json({ status: 'error', message: 'Internal Server Error' });
+      }
+    })
+  }
+
+  const searchBrands = (req, res) => {
+    const { page = 1, limit = 20, search = '', sort_by = 'created_at', sort_order = 'DESC' } = req.query;
+    let pageNum = parseInt(page);
+    let limitNum = parseInt(limit);
+    const sortOrder = sort_order.toUpperCase()
+    brandModel.searchBrands(pageNum, limitNum, search, sort_by, sortOrder, (err, data) => {
+      try {
+
+        const { results, total } = data;
+
+        formatResultData({
+          res,
+          total,
+          limitNum,
+          pageNum,
+          apiEndPoint: 'brands',
+          result: results,
+          totalResults: total
+        })
+
+      } catch (err) {
+        console.error('Error getting Brands:', err);
         res.status(500).json({ status: 'error', message: 'Internal Server Error' });
       }
     })
@@ -106,6 +134,7 @@ function brandController() {
     getAllBrands,
     getBrandById,
     editBrand,
+    searchBrands,
     deleteBrand
   }
 

@@ -41,6 +41,7 @@ router.delete('/api/reviews/:reviewId', reviewController.deleteReviewByID)
 // Brands API
 router.post('/api/brands', brandController.createBrand);
 router.get('/api/brands', brandController.getAllBrands);
+router.get('/api/brands/search', brandController.searchBrands);
 router.get('/api/brands/:brandID', brandController.getBrandById);
 router.put('/api/brands/:brandID', brandController.editBrand);
 router.delete('/api/brands/:brandID', brandController.deleteBrand);
