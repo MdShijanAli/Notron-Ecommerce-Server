@@ -1,88 +1,148 @@
-const ProductModel = require('../models/productModel');
+const productModel = require('../models/productModel')();
+const formatResultData = require("../utils/formatResultsData");
 
-class ProductController {
+function productController() {
 
-  createProduct(req, res){
+  const createProduct = (req, res) => {
     const productData = req.body;
-    const productModel = new ProductModel();
-    productModel.createProduct(productData, (err, result)=>{
-      if(err){
+    console.log('Product Date=====>', productData);
+    productModel.createProduct(productData, (err, result) => {
+      if (err) {
         console.error('Error Creating products:', err);
         res.status(500).send('Internal Server Error');
       }
-      else{
+      else {
         const productId = result.insertId;
         productModel.getProductById(productId, (err, result) => {
           if (err) {
             console.error('Error getting product by ID:', err);
             res.status(500).send('Internal Server Error');
           } else {
-            res.json({status: 'success', message: 'Executed Successfully', data: result.length > 0 ? result[0] : null });
+            res.json({ status: 'success', message: 'Executed Successfully', data: result.length > 0 ? result[0] : null });
           }
         });
       }
     })
   }
 
-  editProductById(req, res){
+  const editProductById = (req, res) => {
     const productData = req.body;
     const productId = req.params.productId;
-    const productModel = new ProductModel();
-    productModel.editProductById(productId, productData, (err, result)=>{
-      if(err){
+    productModel.editProductById(productId, productData, (err, result) => {
+      if (err) {
         console.error('Error Updating products:', err);
         res.status(500).send('Internal Server Error');
       }
-      else{
+      else {
         productModel.getProductById(productId, (err, result) => {
           if (err) {
             console.error('Error getting product by ID:', err);
             res.status(500).send('Internal Server Error');
           } else {
-            res.json({status: 'success', message: 'Executed Successfully', data: result.length > 0 ? result[0] : null });
+            res.json({ status: 'success', message: 'Executed Successfully', data: result.length > 0 ? result[0] : null });
           }
         });
       }
     })
   }
 
-  getAllProducts(req, res) {
-    const productModel = new ProductModel();
-    productModel.getAllProducts((err, result) => {
-      if (err) {
+  const getAllProducts = (req, res) => {
+    const { page = 1, limit = 20 } = req.query;
+    let pageNum = parseInt(page);
+    let limitNum = parseInt(limit);
+    productModel.getAllProducts(pageNum, limitNum, async (err, result) => {
+      try {
+
+        const total = result?.length;
+
+        formatResultData({
+          res,
+          total,
+          limitNum,
+          pageNum,
+          apiEndPoint: 'products',
+          result: result,
+          totalResults: total
+        })
+
+      } catch (err) {
         console.error('Error getting products:', err);
-        res.status(500).send('Internal Server Error');
-      } else {
-        res.json({status: 'success', message: 'Executed Successfully', data: result});
+        res.status(500).json({ status: 'error', message: 'Internal Server Error' });
       }
-    });
+
+    })
+
   }
 
-  getProductById(req, res) {
-    const productId = req.params.productId;
-    const productModel = new ProductModel();
-    productModel.getProductById(productId, (err, result) => {
-      if (err) {
-        console.error('Error getting product by ID:', err);
-        res.status(500).send('Internal Server Error');
-      } else {
-        res.json({status: 'success', message: 'Executed Successfully', data: result.length > 0 ? result[0] : null})
+  const searchProducts = (req, res) => {
+    const { page = 1, limit = 20, search = "" } = req.query;
+    let pageNum = parseInt(page);
+    let limitNum = parseInt(limit);
+    productModel.searchProducts(pageNum, limitNum, search, async (err, result) => {
+      try {
+
+        const total = result?.length;
+
+        formatResultData({
+          res,
+          total,
+          limitNum,
+          pageNum,
+          apiEndPoint: 'products',
+          result: result,
+          totalResults: total
+        })
+
+      } catch (err) {
+        console.error('Error getting products:', err);
+        res.status(500).json({ status: 'error', message: 'Internal Server Error' });
       }
-    });
+
+    })
+
   }
 
-  deleteProductById(req, res){
+  const getProductById = (req, res) => {
     const productId = req.params.productId;
-    const productModel = new ProductModel();
-    productModel.deleteProductById(productId, (err, result)=>{
+    try {
+      productModel.getProductById(productId, (err, result) => {
+        if (err) {
+          console.error('Error getting product by ID:', err);
+          res.status(404).json({ status: 'Bad Request', message: 'Product not found' });
+        } else {
+          res.json({ status: 'success', message: 'Executed Successfully', data: result.length > 0 ? result[0] : null })
+        }
+      });
+    }
+    catch (err) {
+      console.error('Error getting Product By ID:', err);
+      res.status(500).json({ status: 'error', message: 'Internal Server Error' });
+    }
+  }
+
+  const deleteProductById = (req, res) => {
+    const productId = req.params.productId;
+    productModel.deleteProductById(productId, (err, result) => {
       if (err) {
-        console.error('Error getting product by ID:', err);
+        console.error('Error Deleting product by ID:', err);
         res.status(500).send('Internal Server Error');
       } else {
-        res.json({ status: 'success' , message: 'Executed Successfully' });
+        res.json({ status: 'success', message: 'Executed Successfully' });
       }
     })
   }
+
+
+  return {
+    createProduct,
+    editProductById,
+    getAllProducts,
+    getProductById,
+    deleteProductById,
+    searchProducts
+  }
+
+
 }
 
-module.exports = ProductController;
+module.exports = productController;

@@ -1,8 +1,11 @@
 const express = require('express');
 // const mysql = require('mysql');
 const cors = require('cors');
+require('dotenv').config();
+
 const app = express();
 app.use(express.json());
+
 const port = 3000;
 const routes = require('./routes/routes');
 
