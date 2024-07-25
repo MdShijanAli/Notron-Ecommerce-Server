@@ -46,13 +46,14 @@ function managerController() {
   }
 
   const getAllManagers = (req, res) => {
-    const {page =  1, limit = 20} = req.query;
+    const {page =  1, limit = 20, sort_by = 'created_at', sort_order = 'DESC'} = req.query;
     const pageNum = parseInt(page);
     const limitNum = parseInt(limit);
-    managerModel.getAllManagers(pageNum, limitNum, (err, result)=>{
+    const sortOrder = sort_order.toUpperCase()
+    managerModel.getAllManagers(pageNum, limitNum, sort_by, sortOrder, (err, data)=>{
       try {
 
-        const total = result?.length;
+        const { results, total } = data;
 
         formatResultData({
           res,
@@ -60,7 +61,7 @@ function managerController() {
           limitNum,
           pageNum,
           apiEndPoint: 'managers',
-          result: result,
+          result: results,
           totalResults: total
         })
 
