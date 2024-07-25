@@ -72,6 +72,34 @@ function categoryController() {
     })
   }
 
+  const searchCategories = (req, res) => {
+    const { page = 1, limit = 20, search = '', sort_by = 'created_at', sort_order = 'DESC' } = req.query;
+    let pageNum = parseInt(page);
+    let limitNum = parseInt(limit);
+    const sortOrder = sort_order.toUpperCase()
+    categoryModel.searchCategories(pageNum, limitNum, search, sort_by, sortOrder, (err, data) => {
+      try {
+
+        const { results, total } = data;
+
+        formatResultData({
+          res,
+          total,
+          limitNum,
+          pageNum,
+          apiEndPoint: 'categories',
+          result: results,
+          totalResults: total
+        })
+
+      } catch (err) {
+        console.error('Error getting Categories:', err);
+        res.status(500).json({ status: 'error', message: 'Internal Server Error' });
+      }
+    })
+  }
+
+
   const getCategoryById = (req, res) => {
     const categoryId = req.params.categoryID;
     try {
@@ -108,6 +136,7 @@ function categoryController() {
     editCategory,
     getAllCategory,
     getCategoryById,
+    searchCategories,
     deleteCategory
   }
 }
