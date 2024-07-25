@@ -15,9 +15,9 @@ function supplierModel() {
     connection.query(query, values, cb)
   }
 
-  const editSupplier = (supplierData, supplierId, cb) =>{
-     const query = "UPDATE `suppliers` SET `first_name`=?,`last_name`=?,`phone`=?,`email`=?,`photo`=?,`address`=? WHERE id = ?";
-     const values = [
+  const editSupplier = (supplierData, supplierId, cb) => {
+    const query = "UPDATE `suppliers` SET `first_name`=?,`last_name`=?,`phone`=?,`email`=?,`photo`=?,`address`=? WHERE id = ?";
+    const values = [
       supplierData.first_name,
       supplierData.last_name,
       supplierData.phone,
@@ -26,13 +26,13 @@ function supplierModel() {
       supplierData.address,
       supplierId
     ];
-     connection.query(query, values, cb)
+    connection.query(query, values, cb)
   }
 
-  const getAllSuppliers = (page = 1, limit =  20, sort_by = 'created_at', sort_order = 'DESC', cb) => {
+  const getAllSuppliers = (page = 1, limit = 20, sort_by = 'created_at', sort_order = 'DESC', cb) => {
     const skip = (page - 1) * limit;
     const totalQuery = `SELECT COUNT(*) as count FROM suppliers`;
-    const query = `SELECT * FROM suppliers ORDER BY ${ sort_by } ${ sort_order } LIMIT ${skip}, ${limit}`;
+    const query = `SELECT * FROM suppliers ORDER BY ${ sort_by } ${ sort_order } LIMIT ${ skip }, ${ limit }`;
     connection.query(totalQuery, (err, totalResult) => {
       if (err) {
         return cb(err);
@@ -53,26 +53,37 @@ function supplierModel() {
   const getSupplierById = (supplierId, cb) => {
     console.log('Get Supplier ID', supplierId);
     const query = "SELECT * FROM `suppliers` WHERE id = ?";
-    connection.query(query, [supplierId], (err, result)=>{
-      if(err){
+    connection.query(query, [supplierId], (err, result) => {
+      if (err) {
         cb(err)
-      }else{
+      } else {
         cb(null, result)
       }
     })
   }
 
-  const searchSuppliers = (page = 1, limit = 20, searchQuery, cb) =>{
+  const searchSuppliers = (page = 1, limit = 20, searchQuery, sort_by = 'created_at', sort_order = 'DESC', cb) => {
     const skip = (page - 1) * limit;
-    const query = `SELECT * FROM suppliers WHERE first_name LIKE '%${ searchQuery }%' OR last_name LIKE '%${ searchQuery }%' OR phone LIKE '%${ searchQuery }%' OR email LIKE '%${ searchQuery }%' OR address LIKE '%${ searchQuery }%' LIMIT ${ skip }, ${ limit }`
-    connection.query(query, (err, results)=>{
-      if(err){
-        cb(err)
-      }else{
-        cb(null, results)
+    const totalQuery = `SELECT COUNT(*) as count FROM suppliers WHERE first_name LIKE '%${ searchQuery }%' OR last_name LIKE '%${ searchQuery }%' OR phone LIKE '%${ searchQuery }%' OR email LIKE '%${ searchQuery }%' OR address LIKE '%${ searchQuery }%'`;
+
+    const query = `SELECT * FROM suppliers WHERE first_name LIKE '%${ searchQuery }%' OR last_name LIKE '%${ searchQuery }%' OR phone LIKE '%${ searchQuery }%' OR email LIKE '%${ searchQuery }%' OR address LIKE '%${ searchQuery }%' ORDER BY ${ sort_by } ${ sort_order } LIMIT ${ skip }, ${ limit }`
+
+    connection.query(totalQuery, (err, totalResult) => {
+      if (err) {
+        return cb(err);
       }
-    })
-  }
+
+      const total = totalResult[0].count;
+
+      connection.query(query, (err, results) => {
+        if (err) {
+          cb(err);
+        } else {
+          cb(null, { results, total });
+        }
+      });
+    });
+  };
 
   const deleteSupplier = (supplierId, cb) => {
     const query = "DELETE FROM `suppliers` WHERE id = ?"
@@ -80,13 +91,13 @@ function supplierModel() {
   }
 
 
-  return{
-     createSupplier,
-     editSupplier,
-     getAllSuppliers,
-     getSupplierById,
-     searchSuppliers,
-     deleteSupplier
+  return {
+    createSupplier,
+    editSupplier,
+    getAllSuppliers,
+    getSupplierById,
+    searchSuppliers,
+    deleteSupplier
   }
 }
 
