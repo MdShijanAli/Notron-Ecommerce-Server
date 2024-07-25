@@ -29,17 +29,26 @@ function salesMansModel() {
      connection.query(query, values, cb)
   }
 
-  const getAllSalesMans = (page = 1, limit =  20, cb) => {
+  const getAllSalesMans = (page = 1, limit =  20, sort_by = 'created_at', sort_order = 'DESC', cb) => {
     const skip = (page - 1) * limit;
-    const query = `SELECT * FROM sales_mans LIMIT ${skip}, ${limit}`;
-    connection.query(query, (err, results)=>{
-      if(err){
-        cb(err)
-      }else{
-        cb(null, results)
+    const totalQuery = `SELECT COUNT(*) as count FROM sales_mans`;
+    const query = `SELECT * FROM sales_mans ORDER BY ${ sort_by } ${ sort_order } LIMIT ${skip}, ${limit}`;
+    connection.query(totalQuery, (err, totalResult) => {
+      if (err) {
+        return cb(err);
       }
-    })
-  }
+
+      const total = totalResult[0].count;
+
+      connection.query(query, (err, results) => {
+        if (err) {
+          cb(err);
+        } else {
+          cb(null, { results, total });
+        }
+      });
+    });
+  };
 
   const getSalesMansById = (SalesMansId, cb) => {
     console.log('Get SalesMans ID', SalesMansId);
