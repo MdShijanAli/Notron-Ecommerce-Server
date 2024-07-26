@@ -46,10 +46,11 @@ function ownerController() {
   }
 
   const getAllOwners = (req, res) => {
-    const { page = 1, limit = 20 } = req.query;
+    const { page = 1, limit = 20, sort_by = 'created_at', sort_order = 'DESC' } = req.query;
     const pageNum = parseInt(page);
     const limitNum = parseInt(limit);
-    ownerModel.getAllOwners(pageNum, limitNum, (err, data) => {
+    const sortOrder = sort_order.toUpperCase()
+    ownerModel.getAllOwners(pageNum, limitNum, sort_by, sortOrder, (err, data) => {
       try {
 
         const { results, total } = data;
@@ -104,10 +105,11 @@ function ownerController() {
   }
 
   const searchOwners = (req, res) => {
-    const { page = 1, limit = 20, search = "" } = req.query;
+    const { page = 1, limit = 20, search = "", sort_by = 'created_at', sort_order = 'DESC' } = req.query;
     let pageNum = parseInt(page);
     let limitNum = parseInt(limit);
-    ownerModel.searchOwners(pageNum, limitNum, search, (err, data) => {
+    const sortOrder = sort_order.toUpperCase()
+    ownerModel.searchOwners(pageNum, limitNum, search, sort_by, sortOrder, (err, data) => {
       try {
 
         const { results, total } = data;
