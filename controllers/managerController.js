@@ -5,7 +5,7 @@ function managerController() {
 
   const createManager = (req, res) => {
     const managerData = req.body;
-    managerModel.createManager(managerData, (err, result)=>{
+    managerModel.createManager(managerData, (err, result) => {
       if (err) {
         console.error('Error Creating managers:', err);
         res.status(500).send('Internal Server Error');
@@ -27,7 +27,7 @@ function managerController() {
   const editManager = (req, res) => {
     const managerData = req.body;
     const managerId = req.params.managerID
-    managerModel.editManager(managerData, managerId, (err, result)=>{
+    managerModel.editManager(managerData, managerId, (err, result) => {
       if (err) {
         console.error('Error Updating managers:', err);
         res.status(500).send('Internal Server Error');
@@ -46,13 +46,14 @@ function managerController() {
   }
 
   const getAllManagers = (req, res) => {
-    const {page =  1, limit = 20} = req.query;
+    const { page = 1, limit = 20, sort_by = 'created_at', sort_order = 'DESC' } = req.query;
     const pageNum = parseInt(page);
     const limitNum = parseInt(limit);
-    managerModel.getAllManagers(pageNum, limitNum, (err, result)=>{
+    const sortOrder = sort_order.toUpperCase()
+    managerModel.getAllManagers(pageNum, limitNum, sort_by, sortOrder, (err, data) => {
       try {
 
-        const total = result?.length;
+        const { results, total } = data;
 
         formatResultData({
           res,
@@ -60,7 +61,7 @@ function managerController() {
           limitNum,
           pageNum,
           apiEndPoint: 'managers',
-          result: result,
+          result: results,
           totalResults: total
         })
 
@@ -74,41 +75,44 @@ function managerController() {
 
   const getManagerById = (req, res) => {
     const managerId = req.params.managerID;
-    try{
-    managerModel.getManagerById(managerId, (err, result)=>{
-      if (err) {
-        console.error('Error getting manager by ID:', err);
-        res.status(404).json({ status: 'Bad Request', message: 'manager not found' });
-      } else {
-        res.json({ status: 'success', message: 'Executed Successfully', data: result.length > 0 ? 
-         { 
-          "id": result[0].id,
-          "display_name": result[0].first_name + " " + result[0].last_name,
-          "phone": result[0].phone,
-          "email": result[0].email,
-          "photo": result[0].photo,
-          "address": result[0].address,
-          "created_at": result[0].created_at,
-          "updated_at": result[0].updated_at
-         }
-          : null })
-      }
-    });
+    try {
+      managerModel.getManagerById(managerId, (err, result) => {
+        if (err) {
+          console.error('Error getting manager by ID:', err);
+          res.status(404).json({ status: 'Bad Request', message: 'manager not found' });
+        } else {
+          res.json({
+            status: 'success', message: 'Executed Successfully', data: result.length > 0 ?
+              {
+                "id": result[0].id,
+                "display_name": result[0].first_name + " " + result[0].last_name,
+                "phone": result[0].phone,
+                "email": result[0].email,
+                "photo": result[0].photo,
+                "address": result[0].address,
+                "created_at": result[0].created_at,
+                "updated_at": result[0].updated_at
+              }
+              : null
+          })
+        }
+      });
+    }
+    catch (err) {
+      console.error('Error getting manager By ID:', err);
+      res.status(500).json({ status: 'error', message: 'Internal Server Error' });
+    }
   }
-  catch (err) {
-    console.error('Error getting manager By ID:', err);
-    res.status(500).json({ status: 'error', message: 'Internal Server Error' });
-  }
-}
 
-const searchManagers = (req, res) => {
-  const { page = 1, limit = 20, search = "" } = req.query;
-  let pageNum = parseInt(page);
+  const searchManagers = (req, res) => {
+    const { page = 1, limit = 20, search = "", sort_by = 'created_at', sort_order = 'DESC' } = req.query;
+    let pageNum = parseInt(page);
     let limitNum = parseInt(limit);
-    managerModel.searchManagers(pageNum, limitNum, search, async (err, result) => {
+    const sortOrder = sort_order.toUpperCase()
+    managerModel.searchManagers(pageNum, limitNum, search, sort_by, sortOrder, async (err, data) => {
       try {
 
-        const total = result?.length;
+        const { results, total } = data;
 
         formatResultData({
           res,
@@ -116,7 +120,7 @@ const searchManagers = (req, res) => {
           limitNum,
           pageNum,
           apiEndPoint: 'managers',
-          result: result,
+          result: results,
           totalResults: total
         })
 
@@ -130,21 +134,21 @@ const searchManagers = (req, res) => {
   }
 
 
-const deleteManager = (req, res) =>{
-  const managerId = req.params.managerID;
-  managerModel.deleteManager(managerId, (err, result)=>{
-    if (err) {
-      console.error('Error Deleting manager by ID:', err);
-      res.status(500).send('Internal Server Error');
-    } else {
-      res.json({ status: 'success', message: 'Executed Successfully' });
-    }
-  })
-}
+  const deleteManager = (req, res) => {
+    const managerId = req.params.managerID;
+    managerModel.deleteManager(managerId, (err, result) => {
+      if (err) {
+        console.error('Error Deleting manager by ID:', err);
+        res.status(500).send('Internal Server Error');
+      } else {
+        res.json({ status: 'success', message: 'Executed Successfully' });
+      }
+    })
+  }
 
 
 
-  return{
+  return {
     createManager,
     editManager,
     getAllManagers,
